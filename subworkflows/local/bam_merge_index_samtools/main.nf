@@ -3,7 +3,7 @@
 //
 // For all modules here:
 // A when clause condition is defined in the conf/modules.config to determine if the module should be run
-
+include { SAMTOOLS_VIEW as FILTER_BAM       } from '../../../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_INDEX as INDEX_MERGE_BAM } from '../../../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_MERGE as MERGE_BAM       } from '../../../modules/nf-core/samtools/merge/main'
 
@@ -13,6 +13,11 @@ workflow BAM_MERGE_INDEX_SAMTOOLS {
 
     main:
     versions = Channel.empty()
+
+    if (params.filter_bam_expresion){
+        // replace the input `bam` channel with the filtered bams
+        bam = FILTER_BAM(bam, [[:],[]], []).out.bam
+    }
 
     // Figuring out if there is one or more bam(s) from the same sample
     bam_to_merge = bam.branch{ meta, bam ->
