@@ -797,6 +797,7 @@ workflow SAREK {
                             params.concatenate_vcfs)
 
         // Create igvreports of the haplotypecaller and realigned bams
+        ch_igvreports = Channel.empty()
         ch_igvreports = ch_igvreports.mix(
             BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller).map{ meta, vcf -> [ meta.id, meta, vcf ] }
             .join(
