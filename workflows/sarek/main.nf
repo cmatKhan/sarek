@@ -137,6 +137,7 @@ workflow SAREK {
         vep_fasta
         vep_genome
         vep_species
+        exclude_variant_intervals
 
     main:
 
@@ -830,14 +831,16 @@ workflow SAREK {
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_SOMATIC_ALL.out.vcf_all)
 
         // QC
-        VCF_QC_BCFTOOLS_VCFTOOLS(vcf_to_annotate, intervals_bed_combined)
+        VCF_QC_BCFTOOLS_VCFTOOLS(vcf_to_annotate, intervals_bed_combined, exclude_variant_intervals)
+        vcf_to_annotate_filtered = Channel.empty()
+        vcf_to_annotate_filtered = VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_filter_vcf
 
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.bcftools_stats.collect{ meta, stats -> [ stats ] })
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_tstv_counts.collect{ meta, counts -> [ counts ] })
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_tstv_qual.collect{ meta, qual -> [ qual ] })
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_filter_summary.collect{ meta, summary -> [ summary ] })
 
-        CHANNEL_VARIANT_CALLING_CREATE_CSV(vcf_to_annotate, params.outdir)
+        CHANNEL_VARIANT_CALLING_CREATE_CSV(vcf_to_annotate_filtered, params.outdir)
 
         // Gather used variant calling softwares versions
         versions = versions.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.versions)
@@ -847,14 +850,14 @@ workflow SAREK {
         versions = versions.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.versions)
 
         // ANNOTATE
-        if (params.step == 'annotate') vcf_to_annotate = input_sample
+        if (params.step == 'annotate') vcf_to_annotate_filtered = input_sample
 
         if (params.tools.split(',').contains('merge') || params.tools.split(',').contains('snpeff') || params.tools.split(',').contains('vep')|| params.tools.split(',').contains('bcfann')) {
 
             vep_fasta = (params.vep_include_fasta) ? fasta : [[id: 'null'], []]
 
             VCF_ANNOTATE_ALL(
-                vcf_to_annotate.map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
+                vcf_to_annotate_filtered.map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
                 vep_fasta,
                 params.tools,
                 params.snpeff_genome ? "${params.snpeff_genome}.${params.snpeff_db}" : "${params.genome}.${params.snpeff_db}",

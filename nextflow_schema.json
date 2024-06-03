@@ -571,6 +571,13 @@
                     "fa_icon": "fas fa-book",
                     "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`.\n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
                 },
+                "exclude_variant_intervals": {
+                    "type": "string",
+                    "description": "A BED file describing regions (which may be single locations) to remove from variant calls. This is intended to be used to exclude parent variant locations and regions with low mapq",
+                    "pattern": "^\\S+\\.bed$",
+                    "format": "file-path",
+                    "mimetype": "text/tsv"
+                },
                 "ascat_genome": {
                     "type": "string",
                     "fa_icon": "fa-solid fa-text",

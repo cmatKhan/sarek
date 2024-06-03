@@ -93,6 +93,7 @@ known_snps              = params.known_snps              ? Channel.fromPath(para
 mappability             = params.mappability             ? Channel.fromPath(params.mappability).collect()               : Channel.value([])
 pon                     = params.pon                     ? Channel.fromPath(params.pon).collect()                       : Channel.value([]) // PON is optional for Mutect2 (but highly recommended)
 sentieon_dnascope_model = params.sentieon_dnascope_model ? Channel.fromPath(params.sentieon_dnascope_model).collect()   : Channel.value([])
+exclude_variant_intervals = params.exclude_variant_intervals ? Channel.fromPath(params.exclude_variant_intervals).collect() : Channel.empty()
 
 // Initialize value channels based on params, defined in the params.genomes[params.genome] scope
 ascat_genome                = params.ascat_genome       ?:  Channel.empty()
@@ -306,7 +307,8 @@ workflow NFCORE_SAREK {
         vep_extra_files,
         vep_fasta,
         vep_genome,
-        vep_species
+        vep_species,
+        exclude_variant_intervals
     )
 
     emit:
