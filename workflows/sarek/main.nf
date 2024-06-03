@@ -812,7 +812,8 @@ workflow SAREK {
 
         IGVREPORTS(
             ch_igvreports,
-            ch_fasta_fai)
+            [ [:], fasta, fasta_fai ]
+        )
 
         // Gather vcf files for annotation and QC
         vcf_to_annotate = Channel.empty()
