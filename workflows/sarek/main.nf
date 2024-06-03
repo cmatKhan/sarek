@@ -72,6 +72,9 @@ include { BAM_VARIANT_CALLING_SOMATIC_ALL             } from '../../subworkflows
 // POST VARIANTCALLING: e.g. merging
 include { POST_VARIANTCALLING                         } from '../../subworkflows/local/post_variantcalling/main'
 
+// IGVREPORTS
+include { IGVREPORTS                                  } from '../../modules/local/igvreports/main'
+
 // QC on VCF files
 include { VCF_QC_BCFTOOLS_VCFTOOLS                    } from '../../subworkflows/local/vcf_qc_bcftools_vcftools/main'
 
@@ -807,9 +810,9 @@ workflow SAREK {
                 failOnMismatch: true)
                     .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
 
-        // IGVREPORTS(
-        //     ch_igvreports,
-        //     ch_fasta_fai)
+        IGVREPORTS(
+            ch_igvreports,
+            ch_fasta_fai)
 
         // Gather vcf files for annotation and QC
         vcf_to_annotate = Channel.empty()
