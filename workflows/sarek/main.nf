@@ -801,7 +801,7 @@ workflow SAREK {
         ch_igvreports = ch_igvreports.mix(
             BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller).map{ meta, vcf -> [ meta.id, meta, vcf ] }
             .join(
-                BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_haplotypecaller
+                BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
                     .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
                 failOnDuplicate: true,
                 failOnMismatch: true)
