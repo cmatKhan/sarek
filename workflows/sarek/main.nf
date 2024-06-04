@@ -835,12 +835,12 @@ workflow SAREK {
         // QC
         VCF_QC_BCFTOOLS_VCFTOOLS(vcf_to_annotate, intervals_bed_combined, exclude_variant_intervals)
         vcf_to_annotate_filtered = Channel.empty()
-        vcf_to_annotate_filtered = VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_filter_vcf
+        vcf_to_annotate_filtered = VCF_QC_BCFTOOLS_VCFTOOLS.out.variant_filter_vcf
 
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.bcftools_stats.collect{ meta, stats -> [ stats ] })
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_tstv_counts.collect{ meta, counts -> [ counts ] })
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_tstv_qual.collect{ meta, qual -> [ qual ] })
-        reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.vcftools_filter_summary.collect{ meta, summary -> [ summary ] })
+        reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.variant_filter_summary.collect{ meta, summary -> [ summary ] })
 
         CHANNEL_VARIANT_CALLING_CREATE_CSV(vcf_to_annotate_filtered, params.outdir)
 
