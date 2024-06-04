@@ -27,7 +27,7 @@ process IGVREPORTS {
     // if "--tracks" is in the args, then add track_string immediately after it in
     // the args string and set the track_arg to ""
     if (args.contains("--tracks") && track_arg) {
-        args.replace("--tracks", track_arg)
+        args = args.replace("--tracks", track_arg)
         track_arg = ""
     }
 
