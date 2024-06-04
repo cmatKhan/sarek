@@ -14,7 +14,7 @@ workflow VCF_QC_BCFTOOLS_VCFTOOLS {
 
     versions = Channel.empty()
     VCFTOOLS_FILTER(vcf, exclude_variant_intervals, [])
-    BCFTOOLS_STATS(BCFTOOLS_FILTER.out.vcf.map{ meta, vcf -> [ meta, vcf, [] ] }, [[:],[]], [[:],[]], [[:],[]], [[:],[]], [[:],[]])
+    BCFTOOLS_STATS(VCFTOOLS_FILTER.out.vcf.map{ meta, vcf -> [ meta, vcf, [] ] }, [[:],[]], [[:],[]], [[:],[]], [[:],[]], [[:],[]])
     VCFTOOLS_TSTV_COUNT(VCFTOOLS_FILTER.out.vcf, target_bed, [])
     VCFTOOLS_TSTV_QUAL(VCFTOOLS_FILTER.out.vcf, target_bed, [])
     VCFTOOLS_SUMMARY(VCFTOOLS_FILTER.out.vcf, target_bed, [])
