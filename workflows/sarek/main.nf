@@ -800,16 +800,6 @@ workflow SAREK {
         POST_VARIANTCALLING(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_all,
                             params.concatenate_vcfs)
 
-        // Create igvreports of the haplotypecaller and realigned bams
-        ch_igvreports = Channel.empty()
-
-
-        IGVREPORTS(
-            ch_igvreports,
-            fasta.combine(fasta_fai.map{ it -> it[1] }).collect()
-        )
-        versions = versions.mix(IGVREPORTS.out.versions)
-
         // Gather vcf files for annotation and QC
         vcf_to_annotate = Channel.empty()
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_deepvariant)
@@ -863,6 +853,12 @@ workflow SAREK {
                         failOnMismatch: true)
                             .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
             )
+
+            IGVREPORTS(
+                ch_igvreports,
+                fasta.combine(fasta_fai.map{ it -> it[1] }).collect()
+            )
+        versions = versions.mix(IGVREPORTS.out.versions)
         }
 
         // Gather used variant calling softwares versions
