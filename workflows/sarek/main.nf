@@ -811,10 +811,12 @@ workflow SAREK {
                 failOnMismatch: true)
                     .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
 
+
         IGVREPORTS(
             ch_igvreports,
-            [ [:], fasta, fasta_fai ]
+            fasta.combine(fasta_fai.map{ it -> it[1] }).collect()
         )
+        versions = versions.mix(IGVREPORTS.out.versions)
 
         // Gather vcf files for annotation and QC
         vcf_to_annotate = Channel.empty()
