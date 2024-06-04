@@ -578,6 +578,11 @@
                     "format": "file-path",
                     "mimetype": "text/tsv"
                 },
+                "igvreports_unfiltered": {
+                    "type": "boolean",
+                    "hidden": true,
+                    "description": "Set this to true to also create IGV reports of the unfiltered variant set. Note that this only works with haplotypecaller"
+                },
                 "ascat_genome": {
                     "type": "string",
                     "fa_icon": "fa-solid fa-text",

@@ -802,14 +802,6 @@ workflow SAREK {
 
         // Create igvreports of the haplotypecaller and realigned bams
         ch_igvreports = Channel.empty()
-        ch_igvreports = ch_igvreports.mix(
-            BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller).map{ meta, vcf -> [ meta.id, meta, vcf ] }
-            .join(
-                BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
-                    .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
-                failOnDuplicate: true,
-                failOnMismatch: true)
-                    .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
 
 
         IGVREPORTS(
@@ -843,6 +835,35 @@ workflow SAREK {
         reports = reports.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.variant_filter_summary.collect{ meta, summary -> [ summary ] })
 
         CHANNEL_VARIANT_CALLING_CREATE_CSV(vcf_to_annotate_filtered, params.outdir)
+
+        if (params.tools.split(',').contains('igvreports')) {
+            // Create igvreports of the haplotypecaller and realigned bams
+            ch_igvreports = Channel.empty()
+            if(params.igvreports_unfiltered) {
+
+                ch_igvreports = ch_igvreports.mix(
+                    BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller
+                        .map{ meta, vcf -> [ meta.id, meta, vcf ] }
+                        .join(
+                            BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
+                                .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
+                            failOnDuplicate: true,
+                            failOnMismatch: true)
+                        .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
+                )
+            }
+
+            ch_igvreports = ch_igvreports.mix(
+                vcf_to_annotate_filtered
+                    .map{ meta, vcf -> [ meta.id, meta, vcf ] }
+                    .join(
+                        BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
+                            .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
+                        failOnDuplicate: true,
+                        failOnMismatch: true)
+                            .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
+            )
+        }
 
         // Gather used variant calling softwares versions
         versions = versions.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.versions)
