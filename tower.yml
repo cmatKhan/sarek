@@ -57,3 +57,5 @@ reports:
     display: "TXT (tab separated) summary counts for variants affecting each transcript and gene"
   "**/reports/EnsemblVEP/*/*/*_VEP.summary.html":
     display: "Summary of the VEP run"
+  "**/igvreports/*/*/*.html":
+    display: "IGV reports"
