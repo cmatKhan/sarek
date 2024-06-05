@@ -143,6 +143,7 @@ if (params.tools && (params.tools.split(',').contains('vep')    || params.tools.
         params.build_only_index,
         params.dbsnp,
         params.fasta,
+        params.gatk_hard_filter,
         params.germline_resource,
         params.intervals,
         params.joint_germline,
