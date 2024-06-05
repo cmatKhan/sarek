@@ -1,4 +1,5 @@
 include { GATK4_VARIANTFILTRATION                                       } from '../../../modules/nf-core/gatk4/variantfiltration/main'
+include { GATK4_SELECTVARIANTS                                          } from '../../../modules/nf-core/gatk4/selectvariants/main'
 include { GATK4_CNNSCOREVARIANTS      as CNNSCOREVARIANTS               } from '../../../modules/nf-core/gatk4/cnnscorevariants/main'
 include { GATK4_FILTERVARIANTTRANCHES as FILTERVARIANTTRANCHES          } from '../../../modules/nf-core/gatk4/filtervarianttranches/main'
 
@@ -25,11 +26,18 @@ workflow VCF_VARIANT_FILTERING_GATK {
             fasta_fai.map{ it -> [ [:], it]},
             dict.map{ it -> [ [:], it]},)
 
-        filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
+        versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
+
+        GATK_SELECTVARIANTS(
+            GATK4_VARIANTFILTRATION.out.vcf
+                .join(GATK4_VARIANTFILTRATION.out.tbi, failOnDuplicate: true, failOnMismatch: true)
+                .map{ meta, vcf -> [ meta, vcf, tbi, [] ] })
+
+        versions = versions.mix(GATK4_SELECTVARIANTS.out.versions)
+
+        filtered_vcf = GATK_SELECTVARIANTS.out.vcf
             // remove no longer necessary field: num_intervals
             .map{ meta, vcf -> [ meta - meta.subMap('num_intervals'), vcf ] }
-
-        versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
 
     } else {
 
