@@ -23,7 +23,7 @@ workflow VCF_VARIANT_FILTERING_GATK {
             vcf,
             fasta.map{ it -> [ [:], it]},
             fasta_fai.map{ it -> [ [:], it]},
-            dict)
+            dict.map{ it -> [ [:], it]},)
 
         filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
             // remove no longer necessary field: num_intervals
