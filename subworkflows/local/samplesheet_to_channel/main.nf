@@ -13,6 +13,7 @@ workflow  SAMPLESHEET_TO_CHANNEL{
     build_only_index                //
     dbsnp                           //
     fasta                           //
+    gatk_hard_filter                //
     germline_resource               //
     intervals                       //
     joint_germline                  //
@@ -206,8 +207,8 @@ workflow  SAMPLESHEET_TO_CHANNEL{
         if (step in ['mapping', 'markduplicates', 'prepare_recalibration', 'recalibrate'] && (!skip_tools || (skip_tools && !skip_tools.split(',').contains('baserecalibrator')))) {
             error("Base quality score recalibration requires at least one resource file. Please provide at least one of `--dbsnp` or `--known_indels`\nYou can skip this step in the workflow by adding `--skip_tools baserecalibrator` to the command.")
         }
-        if (tools && (tools.split(',').contains('haplotypecaller') || tools.split(',').contains('sentieon_haplotyper') || tools.split(',').contains('sentieon_dnascope'))) {
-            error("Please set `--gatk_hard_filter` to skip VSQR based filtering. If GATK's Haplotypecaller, Sentieon's Dnascope or Sentieon's Haplotyper is specified without `--dbsnp` or `--known_indels, the recommended GATK recommended VSQR filters cannot be used. Only hard filtering with VariantFilter is available. Avoid this warning by setting `--gatk_hard_filter` to the command.\nFor more information see GATK Variant Filtering Recommendations: https://gatk.broadinstitute.org/hc/en-us/articles/360035531112--How-to-Filter-variants-either-with-VQSR-or-by-hard-filtering\nFor more information see FilterVariantTranches (single-sample, default): https://gatk.broadinstitute.org/hc/en-us/articles/5358928898971-FilterVariantTranches\nFor more information see VariantRecalibration (--joint_germline): https://gatk.broadinstitute.org/hc/en-us/articles/5358906115227-VariantRecalibrator\nFor more information on GATK Best practice germline variant calling: https://gatk.broadinstitute.org/hc/en-us/articles/360035535932-Germline-short-variant-discovery-SNPs-Indels-")
+        if (tools && !gatk_hard_filter && (tools.split(',').contains('haplotypecaller') || tools.split(',').contains('sentieon_haplotyper') || tools.split(',').contains('sentieon_dnascope'))) {
+            error("Please set `--gatk_hard_filter` to skip VSQR based filtering. If GATK's Haplotypecaller, Sentieon's Dnascope or Sentieon's Haplotyper is specified without `--dbsnp` or `--known_indels, the recommended GATK recommended VSQR filters cannot be used. Only hard filtering with VariantFiltration is available. Avoid this warning by setting `--gatk_hard_filter` to the command.\nFor more information see GATK Variant Filtering Recommendations: https://gatk.broadinstitute.org/hc/en-us/articles/360035531112--How-to-Filter-variants-either-with-VQSR-or-by-hard-filtering\nFor more information see FilterVariantTranches (single-sample, default): https://gatk.broadinstitute.org/hc/en-us/articles/5358928898971-FilterVariantTranches\nFor more information see VariantRecalibration (--joint_germline): https://gatk.broadinstitute.org/hc/en-us/articles/5358906115227-VariantRecalibrator\nFor more information on GATK Best practice germline variant calling: https://gatk.broadinstitute.org/hc/en-us/articles/360035535932-Germline-short-variant-discovery-SNPs-Indels-")
         }
     }
     if (joint_germline && (!tools || !(tools.split(',').contains('haplotypecaller') || tools.split(',').contains('sentieon_haplotyper') || tools.split(',').contains('sentieon_dnascope')))) {
