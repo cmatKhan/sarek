@@ -284,6 +284,11 @@
                         "git_sha": "5fd04feb37b58caa6a54d41e38c80066bdf71056",
                         "installed_by": ["modules"]
                     },
+                    "gatk4/selectvariants": {
+                        "branch": "master",
+                        "git_sha": "d742e3143f2ccb8853c29b35cfcf50b5e5026980",
+                        "installed_by": ["modules"]
+                    },
                     "gatk4/variantfiltration": {
                         "branch": "master",
                         "git_sha": "00409369b2aff69bded4f0a9e7a80e17d933b426",
