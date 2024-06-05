@@ -314,6 +314,11 @@
                         "git_sha": "b42fec6f7c6e5d0716685cabb825ef6bf6e386b5",
                         "installed_by": ["modules"]
                     },
+                    "igvreports": {
+                        "branch": "master",
+                        "git_sha": "c62ff4610d88d2a0a4f25b8e2c2188476d08aed4",
+                        "installed_by": ["modules"]
+                    },
                     "manta/germline": {
                         "branch": "master",
                         "git_sha": "ebc1733b77c702f19fe42076a5edfcbaa0d84f66",
