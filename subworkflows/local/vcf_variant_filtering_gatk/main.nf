@@ -19,10 +19,16 @@ workflow VCF_VARIANT_FILTERING_GATK {
 
     if (params.gatk_hard_filter){
 
-        GATK4_VARIANTFILTRATION(vcf, fasta, fasta_fai, dict)
+        GATK4_VARIANTFILTRATION(
+            vcf,
+            fasta.map{ it -> [ [:], it]},
+            fasta_fai,
+            dict)
+
         filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
             // remove no longer necessary field: num_intervals
             .map{ meta, vcf -> [ meta - meta.subMap('num_intervals'), vcf ] }
+
         versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
 
     } else {
