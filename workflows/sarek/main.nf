@@ -75,6 +75,9 @@ include { POST_VARIANTCALLING                         } from '../../subworkflows
 // QC on VCF files
 include { VCF_QC_BCFTOOLS_VCFTOOLS                    } from '../../subworkflows/local/vcf_qc_bcftools_vcftools/main'
 
+// Create IGV reports
+include { IGVREPORTS                                  } from '../../modules/nf-core/igvreports/main'
+
 // Annotation
 include { VCF_ANNOTATE_ALL                            } from '../../subworkflows/local/vcf_annotate_all/main'
 
