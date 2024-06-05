@@ -24,11 +24,11 @@ workflow VCF_QC_BCFTOOLS_VCFTOOLS {
     versions = versions.mix(VCFTOOLS_TSTV_COUNT.out.versions)
 
     emit:
-    variant_filter_vcf     = VARIANT_FILTER.out.vcf
+    variant_filter_vcf      = VARIANT_FILTER.out.vcf
     bcftools_stats          = BCFTOOLS_STATS.out.stats
     vcftools_tstv_counts    = VCFTOOLS_TSTV_COUNT.out.tstv_count
     vcftools_tstv_qual      = VCFTOOLS_TSTV_QUAL.out.tstv_qual
-    variant_filter_summary = VCFTOOLS_SUMMARY.out.filter_summary
+    variant_filter_summary  = VCFTOOLS_SUMMARY.out.filter_summary
 
     versions
 }

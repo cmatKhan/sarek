@@ -858,7 +858,7 @@ workflow SAREK {
                 ch_igvreports,
                 fasta.combine(fasta_fai.map{ it -> it[1] }).collect()
             )
-        versions = versions.mix(IGVREPORTS.out.versions)
+            versions = versions.mix(IGVREPORTS.out.versions)
         }
 
         // Gather used variant calling softwares versions
