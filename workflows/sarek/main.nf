@@ -836,6 +836,28 @@ workflow SAREK {
         versions = versions.mix(POST_VARIANTCALLING.out.versions)
         versions = versions.mix(VCF_QC_BCFTOOLS_VCFTOOLS.out.versions)
 
+        if (params.tools.split(',').contains('igvreports')) {
+            // Create igvreports of the haplotypecaller and realigned bams
+            ch_igvreports = Channel.empty()
+
+            ch_igvreports = ch_igvreports.mix(
+                vcf_to_annotate
+                    .map{ meta, vcf -> [ meta.id, meta, vcf ] }
+                    .join(
+                        BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
+                            .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
+                        failOnDuplicate: true,
+                        failOnMismatch: true)
+                            .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
+            )
+
+            IGVREPORTS(
+                ch_igvreports,
+                fasta.combine(fasta_fai.map{ it -> it[1] }).collect()
+            )
+            versions = versions.mix(IGVREPORTS.out.versions)
+        }
+
         // ANNOTATE
         if (params.step == 'annotate') vcf_to_annotate = input_sample
 
