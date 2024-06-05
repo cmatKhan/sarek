@@ -22,7 +22,7 @@ workflow VCF_VARIANT_FILTERING_GATK {
         GATK4_VARIANTFILTRATION(
             vcf,
             fasta.map{ it -> [ [:], it]},
-            fasta_fai,
+            fasta_fai.map{ it -> [ [:], it]},
             dict)
 
         filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
