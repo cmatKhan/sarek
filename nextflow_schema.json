@@ -409,6 +409,11 @@
                     "description": "Option for selecting the PCR indel model used by Sentieon Dnascope.",
                     "help_text": "PCR indel model used to weed out false positive indels more or less aggressively. The possible MODELs are: NONE (used for PCR free samples), and HOSTILE, AGGRESSIVE and CONSERVATIVE, in order of decreasing aggressiveness. The default value is CONSERVATIVE.",
                     "pattern": "^(NONE|HOSTILE|AGGRESSIVE|CONSERVATIVE)(?<!,)$"
+                },
+                "gatk_hard_filter": {
+                    "type": "boolean",
+                    "description": "Set to true to use VariantFiltration instead of the VSQR model for variant filtering GATK HaplotypeCaller variants. If --dbsnp and --known_indels are not provided, and haplotypecaller is turned on, then this must be set",
+                    "hidden": true
                 }
             }
         },
