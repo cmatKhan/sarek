@@ -28,14 +28,14 @@ workflow VCF_VARIANT_FILTERING_GATK {
 
         versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
 
-        GATK_SELECTVARIANTS(
+        GATK4_SELECTVARIANTS(
             GATK4_VARIANTFILTRATION.out.vcf
                 .join(GATK4_VARIANTFILTRATION.out.tbi, failOnDuplicate: true, failOnMismatch: true)
                 .map{ meta, vcf -> [ meta, vcf, tbi, [] ] })
 
         versions = versions.mix(GATK4_SELECTVARIANTS.out.versions)
 
-        filtered_vcf = GATK_SELECTVARIANTS.out.vcf
+        filtered_vcf = GATK4_SELECTVARIANTS.out.vcf
             // remove no longer necessary field: num_intervals
             .map{ meta, vcf -> [ meta - meta.subMap('num_intervals'), vcf ] }
 
