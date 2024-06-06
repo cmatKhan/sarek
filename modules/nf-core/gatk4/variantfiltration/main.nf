@@ -26,7 +26,7 @@ process GATK4_VARIANTFILTRATION {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     // Check if --filter-not-in-mask is in args
-    def args = mask ? (args.contains('--filter-not-in-mask')
+    args = mask ? (args.contains('--filter-not-in-mask')
         ? args.replace("--filter-not-in-mask", " --filter-not-in-mask ${mask}") 
         : "--mask ${mask}") : ''
 
