@@ -819,6 +819,7 @@ workflow SAREK {
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_strelka)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_tiddit)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_mpileup)
+        vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_TUMOR_ONLY_ALL.out.vcf_all)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_SOMATIC_ALL.out.vcf_all)
 
@@ -850,7 +851,6 @@ workflow SAREK {
                     .join(
                         BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
                             .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
-                        failOnDuplicate: true,
                         failOnMismatch: true)
                             .map{ id, meta, vcf, gff, bam, bai -> [ meta, vcf, [bam, gff], [bai] ] }
             )

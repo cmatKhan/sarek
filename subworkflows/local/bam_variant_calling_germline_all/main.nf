@@ -80,7 +80,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
         vcf_mpileup = BAM_VARIANT_CALLING_MPILEUP.out.vcf
         versions = versions.mix(BAM_VARIANT_CALLING_MPILEUP.out.versions)
     }
-
+ci (
     // CNVKIT
     if (tools.split(',').contains('cnvkit')) {
         BAM_VARIANT_CALLING_CNVKIT(
@@ -361,6 +361,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
         bam_haplotypecaller
     )
 
+
+
     emit:
     gvcf_sentieon_dnascope
     gvcf_sentieon_haplotyper
@@ -375,6 +377,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     vcf_sentieon_haplotyper
     vcf_tiddit
     bam_realigned_all
+    vcf_cnvkit = BAM_VARIANT_CALLING_CNVKIT.out.cnv_calls_export
 
     versions
 }

@@ -16,6 +16,7 @@ workflow BAM_VARIANT_CALLING_CNVKIT {
     fasta_fai           // channel: [optional]  meta, fasta_fai
     targets             // channel: [mandatory] meta, bed
     reference           // channel: [optional]  meta, cnn
+    vcf                 // channel: [optional]  meta, vcf
 
     main:
     versions = Channel.empty()
