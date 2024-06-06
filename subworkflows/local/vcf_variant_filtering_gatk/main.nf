@@ -13,6 +13,7 @@ workflow VCF_VARIANT_FILTERING_GATK {
     intervals_bed_combined
     known_sites
     known_sites_tbi
+    exclude_intervals
 
     main:
 
@@ -29,7 +30,8 @@ workflow VCF_VARIANT_FILTERING_GATK {
         GATK4_SELECTVARIANTS(
             GATK4_VARIANTFILTRATION.out.vcf
                 .join(GATK4_VARIANTFILTRATION.out.tbi, failOnDuplicate: true, failOnMismatch: true)
-                .map{ meta, vcf, tbi -> [ meta, vcf, tbi, [] ] })
+                .map{ meta, vcf, tbi -> [ meta, vcf, tbi, [] ] },
+                exclude_intervals)
 
         versions = versions.mix(GATK4_SELECTVARIANTS.out.versions)
 

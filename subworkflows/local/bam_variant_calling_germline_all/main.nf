@@ -133,8 +133,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
             dict,
             dbsnp.map{ it -> [[:], []] },
             dbsnp_tbi.map{ it -> [[:], []] },
-            intervals,
-            exclude_intervals)
+            intervals)
 
         vcf_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.vcf
         tbi_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.tbi
@@ -172,7 +171,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
                     dict.map{ meta, dict -> [ dict ] },
                     intervals_bed_combined_haplotypec,
                     known_sites_indels.concat(known_sites_snps).flatten().unique().collect(),
-                    known_sites_indels_tbi.concat(known_sites_snps_tbi).flatten().unique().collect())
+                    known_sites_indels_tbi.concat(known_sites_snps_tbi).flatten().unique().collect(),
+                    exclude_intervals)
 
                 vcf_haplotypecaller = VCF_VARIANT_FILTERING_GATK.out.filtered_vcf
 
@@ -306,7 +306,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
                     dict.map{ meta, dict -> [ dict ] },
                     intervals_bed_combined_haplotypec,
                     known_sites_indels.concat(known_sites_snps).flatten().unique().collect(),
-                    known_sites_indels_tbi.concat(known_sites_snps_tbi).flatten().unique().collect())
+                    known_sites_indels_tbi.concat(known_sites_snps_tbi).flatten().unique().collect(),
+                    exclude_interval)
 
                 vcf_sentieon_haplotyper = SENTIEON_HAPLOTYPER_VCF_VARIANT_FILTERING_GATK.out.filtered_vcf
 
