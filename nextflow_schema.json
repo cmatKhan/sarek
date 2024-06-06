@@ -247,6 +247,13 @@
             "default": "",
             "fa_icon": "fas fa-toolbox",
             "properties": {
+                "exclude_intervals": {
+                    "type": "string",
+                    "description": "BED file describing regions to exclude from variant calling",
+                    "pattern": "^\\S+\\.bed$",
+                    "format": "file-path",
+                    "mimetype": "text/txt"
+                },
                 "concatenate_vcfs": {
                     "type": "boolean",
                     "fa_icon": "fas fa-merge",

@@ -49,6 +49,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     sentieon_dnascope_emit_mode       // channel: [mandatory] value channel with string
     sentieon_dnascope_pcr_indel_model // channel: [mandatory] value channel with string
     sentieon_dnascope_model           // channel: [mandatory] value channel with string
+    exclude_intervals                   // channel: [mandatory] intervals to exclude from variant calling
 
     main:
     versions = Channel.empty()
@@ -132,7 +133,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
             dict,
             dbsnp.map{ it -> [[:], []] },
             dbsnp_tbi.map{ it -> [[:], []] },
-            intervals)
+            intervals,
+            exclude_intervals)
 
         vcf_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.vcf
         tbi_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.tbi

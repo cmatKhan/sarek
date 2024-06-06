@@ -17,6 +17,7 @@ workflow BAM_VARIANT_CALLING_HAPLOTYPECALLER {
     dbsnp                        // channel: [optional]
     dbsnp_tbi                    // channel: [optional]
     intervals                    // channel: [mandatory] [ intervals, num_intervals ] or [ [], 0 ] if no intervals
+    exclude_intervals              // channel: [optional] [ exclude_intervals_bam]
 
     main:
     versions = Channel.empty()
@@ -36,7 +37,8 @@ workflow BAM_VARIANT_CALLING_HAPLOTYPECALLER {
         fasta_fai,
         dict,
         dbsnp,
-        dbsnp_tbi)
+        dbsnp_tbi,
+        exclude_intervals)
 
     // For joint genotyping
     gvcf_tbi_intervals = GATK4_HAPLOTYPECALLER.out.vcf

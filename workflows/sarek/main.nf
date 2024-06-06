@@ -137,6 +137,7 @@ workflow SAREK {
         vep_fasta
         vep_genome
         vep_species
+        exclude_intervals
 
     main:
 
@@ -743,7 +744,8 @@ workflow SAREK {
             params.sentieon_haplotyper_emit_mode,
             params.sentieon_dnascope_emit_mode,
             params.sentieon_dnascope_pcr_indel_model,
-            sentieon_dnascope_model)
+            sentieon_dnascope_model,
+            exclude_intervals)
 
         // TUMOR ONLY VARIANT CALLING
         BAM_VARIANT_CALLING_TUMOR_ONLY_ALL(
