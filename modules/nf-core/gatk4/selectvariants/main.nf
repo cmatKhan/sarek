@@ -9,7 +9,6 @@ process GATK4_SELECTVARIANTS {
 
     input:
     tuple val(meta), path(vcf), path(vcf_idx), path (intervals)
-    path(exclude_intervals)
 
     output:
     tuple val(meta), path("*.vcf.gz")       , emit: vcf
@@ -23,7 +22,6 @@ process GATK4_SELECTVARIANTS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def interval = intervals ? "--intervals ${intervals}" : ""
-    def exclude_interval = exclude_intervals ? "--exclude-intervals ${exclude_intervals}" : ""
 
     def avail_mem = 3072
     if (!task.memory) {
@@ -37,7 +35,6 @@ process GATK4_SELECTVARIANTS {
         --variant $vcf \\
         --output ${prefix}.vcf.gz \\
         $interval \\
-        $exclude_interval \\
         --tmp-dir . \\
         $args
 

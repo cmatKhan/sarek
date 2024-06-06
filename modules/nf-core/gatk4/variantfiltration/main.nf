@@ -12,6 +12,7 @@ process GATK4_VARIANTFILTRATION {
     tuple val(meta2), path(fasta)
     tuple val(meta3), path(fai)
     tuple val(meta4), path(dict)
+    tuple val(meta5), path(mask)
 
     output:
     tuple val(meta), path("*.vcf.gz"), emit: vcf
@@ -24,6 +25,10 @@ process GATK4_VARIANTFILTRATION {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    // Check if --filter-not-in-mask is in args
+    def args = mask ? (args.contains('--filter-not-in-mask')
+        ? args.replace("--filter-not-in-mask", " --filter-not-in-mask ${mask}") 
+        : "--mask ${mask}") : ''
 
     def avail_mem = 3072
     if (!task.memory) {

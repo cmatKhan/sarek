@@ -25,13 +25,13 @@ workflow VCF_VARIANT_FILTERING_GATK {
             vcf,
             fasta.map{ it -> [ [:], it]},
             fasta_fai.map{ it -> [ [:], it]},
-            dict.map{ it -> [ [:], it]},)
+            dict.map{ it -> [ [:], it]},
+            exclude_intervals)
 
         GATK4_SELECTVARIANTS(
             GATK4_VARIANTFILTRATION.out.vcf
                 .join(GATK4_VARIANTFILTRATION.out.tbi, failOnDuplicate: true, failOnMismatch: true)
-                .map{ meta, vcf, tbi -> [ meta, vcf, tbi, [] ] },
-                exclude_intervals)
+                .map{ meta, vcf, tbi -> [ meta, vcf, tbi, [] ] })
 
         versions = versions.mix(GATK4_SELECTVARIANTS.out.versions)
 
