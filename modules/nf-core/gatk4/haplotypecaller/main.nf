@@ -14,6 +14,7 @@ process GATK4_HAPLOTYPECALLER {
     tuple val(meta4), path(dict)
     tuple val(meta5), path(dbsnp)
     tuple val(meta6), path(dbsnp_tbi)
+    path(exclude_intervals)
 
     output:
     tuple val(meta), path("*.vcf.gz")       , emit: vcf
@@ -31,6 +32,7 @@ process GATK4_HAPLOTYPECALLER {
     def interval_command = intervals ? "--intervals $intervals" : ""
     def dragstr_command = dragstr_model ? "--dragstr-params-path $dragstr_model" : ""
     def bamout_command = args.contains("--bam-writer-type") ? "--bam-output ${prefix.replaceAll('.g\\s*$', '')}.realigned.bam" : ""
+    def exclude_intervals = exclude_intervals ? "--exclude-intervals $exclude_intervals" : ""
 
     def avail_mem = 3072
     if (!task.memory) {
@@ -48,6 +50,7 @@ process GATK4_HAPLOTYPECALLER {
         $interval_command \\
         $dragstr_command \\
         $bamout_command \\
+        $exclude_intervals \\
         --tmp-dir . \\
         $args
 
