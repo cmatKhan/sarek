@@ -89,6 +89,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
             fasta,
             fasta_fai,
             intervals_bed_combined.map{ it -> [[id:it[0].baseName], it] },
+            [[id:"null"], []],
             [[id:"null"], []]
         )
         versions = versions.mix(BAM_VARIANT_CALLING_CNVKIT.out.versions)
