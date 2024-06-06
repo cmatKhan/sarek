@@ -27,7 +27,13 @@ workflow VCF_VARIANT_FILTERING_GATK {
             dict.map{ it -> [ [:], it]},
             vcf_exclude_intervals)
 
-        versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
+        GATK4_SELECTVARIANTS(
+            GATK4_VARIANTFILTRATION.out.vcf
+                .join(GATK4_VARIANTFILTRATION.out.tbi, failOnDuplicate: true, failOnMismatch: true)
+                .map{ meta, vcf, tbi -> [ meta, vcf, tbi, [] ] },
+                exclude_intervals)
+
+        versions = versions.mix(GATK4_SELECTVARIANTS.out.versions)
 
         filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
 

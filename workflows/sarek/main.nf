@@ -106,6 +106,7 @@ workflow SAREK {
         dict
         fasta
         fasta_fai
+        gff
         gc_file
         germline_resource
         germline_resource_tbi
@@ -846,13 +847,15 @@ workflow SAREK {
             ch_igvreports = ch_igvreports.mix(
                 vcf_to_annotate
                     .map{ meta, vcf -> [ meta.id, meta, vcf ] }
+                    .combine(gff.map{ it -> it[1] })
                     .join(
                         BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
                             .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
                         failOnDuplicate: true,
                         failOnMismatch: true)
-                            .map{ id, meta, vcf, bam, bai -> [ meta, vcf, [bam], [bai] ] }
+                            .map{ id, meta, vcf, gff, bam, bai -> [ meta, vcf, [bam, gff], [bai] ] }
             )
+            ch_igvreports.view()
 
             IGVREPORTS(
                 ch_igvreports,
