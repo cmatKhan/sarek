@@ -49,7 +49,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     sentieon_dnascope_emit_mode       // channel: [mandatory] value channel with string
     sentieon_dnascope_pcr_indel_model // channel: [mandatory] value channel with string
     sentieon_dnascope_model           // channel: [mandatory] value channel with string
-    exclude_intervals                   // channel: [mandatory] intervals to exclude from variant calling
+    exclude_intervals                 // channel: [mandatory] intervals to exclude from variant calling
 
     main:
     versions = Channel.empty()
@@ -80,7 +80,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
         vcf_mpileup = BAM_VARIANT_CALLING_MPILEUP.out.vcf
         versions = versions.mix(BAM_VARIANT_CALLING_MPILEUP.out.versions)
     }
-ci (
+
     // CNVKIT
     if (tools.split(',').contains('cnvkit')) {
         BAM_VARIANT_CALLING_CNVKIT(
@@ -360,8 +360,6 @@ ci (
     bam_realigned_all = Channel.empty().mix(
         bam_haplotypecaller
     )
-
-
 
     emit:
     gvcf_sentieon_dnascope
