@@ -851,7 +851,6 @@ workflow SAREK {
                     .join(
                         BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
                             .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
-                        failOnDuplicate: true,
                         failOnMismatch: true)
                             .map{ id, meta, vcf, gff, bam, bai -> [ meta, vcf, [bam, gff], [bai] ] }
             )
