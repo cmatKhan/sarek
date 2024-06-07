@@ -254,7 +254,7 @@
                     "format": "file-path",
                     "mimetype": "text/txt"
                 },
-                "exclude_intervals_tbi": {
+                "exclude_intervals_idx": {
                     "type": "string",
                     "description": "An index file for the exclude_variants file. Create it with GATK IndexFeatureFile",
                     "pattern": "^\\S+\\.[bed,vcf].idx$",
