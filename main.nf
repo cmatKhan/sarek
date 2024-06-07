@@ -98,7 +98,7 @@ sentieon_dnascope_model = params.sentieon_dnascope_model ? Channel.fromPath(para
 exclude_intervals       = Channel.fromPath([params.exclude_intervals ? params.exclude_intervals : "", params.exclude_intervals_idx ? params.exclude_intervals_idx : ""]).collect()
 exclude_intervals       = exclude_intervals.map{ intervals, index -> [ [:], intervals, index ] }
 
-exclude_intervals.view()
+exclude_intervals
 // Initialize value channels based on params, defined in the params.genomes[params.genome] scope
 ascat_genome                = params.ascat_genome       ?:  Channel.empty()
 dbsnp_vqsr                  = params.dbsnp_vqsr         ?   Channel.value(params.dbsnp_vqsr)        : Channel.empty()
