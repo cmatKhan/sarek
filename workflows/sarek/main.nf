@@ -810,6 +810,7 @@ workflow SAREK {
 
         // Gather vcf files for annotation and QC
         vcf_to_annotate = Channel.empty()
+        vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_deepvariant)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_freebayes)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller)
@@ -844,7 +845,7 @@ workflow SAREK {
             ch_igvreports = Channel.empty()
 
             ch_igvreports = ch_igvreports.mix(
-                vcf_to_annotate
+                BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller
                     .map{ meta, vcf -> [ meta.id, meta, vcf ] }
                     .combine(gff.map{ it -> it[1] })
                     .join(
