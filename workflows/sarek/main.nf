@@ -810,7 +810,6 @@ workflow SAREK {
 
         // Gather vcf files for annotation and QC
         vcf_to_annotate = Channel.empty()
-        vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_deepvariant)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_freebayes)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller)
@@ -846,7 +845,6 @@ workflow SAREK {
 
             ch_igvreports = ch_igvreports.mix(
                 vcf_to_annotate
-                    .filter{ meta, vcf -> meta.variantcaller == 'haplotypecaller' }
                     .map{ meta, vcf -> [ meta.id, meta, vcf ] }
                     .combine(gff.map{ it -> it[1] })
                     .join(
@@ -871,7 +869,9 @@ workflow SAREK {
             vep_fasta = (params.vep_include_fasta) ? fasta : [[id: 'null'], []]
 
             VCF_ANNOTATE_ALL(
-                vcf_to_annotate.map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
+                vcf_to_annotate
+                    .mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
+                    .map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
                 vep_fasta,
                 params.tools,
                 params.snpeff_genome ? "${params.snpeff_genome}.${params.snpeff_db}" : "${params.genome}.${params.snpeff_db}",
