@@ -853,7 +853,6 @@ workflow SAREK {
                         failOnMismatch: true)
                             .map{ id, meta, vcf, gff, bam, bai -> [ meta, vcf, [bam, gff], [bai] ] }
             )
-            ch_igvreports.view()
 
             IGVREPORTS(
                 ch_igvreports,
