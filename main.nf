@@ -95,7 +95,7 @@ known_snps              = params.known_snps              ? Channel.fromPath(para
 mappability             = params.mappability             ? Channel.fromPath(params.mappability).collect()               : Channel.value([])
 pon                     = params.pon                     ? Channel.fromPath(params.pon).collect()                       : Channel.value([]) // PON is optional for Mutect2 (but highly recommended)
 sentieon_dnascope_model = params.sentieon_dnascope_model ? Channel.fromPath(params.sentieon_dnascope_model).collect()   : Channel.value([])
-exclude_intervals       = Channel.of([:]).mix(Channel.fromPath(params.exclude_intervals ? params.exclude_intervals : "", params.exclude_intervals_idx ? params.exclude_intervals_idx : "").collect())
+exclude_intervals       = Channel.fromPath([:], [params.exclude_intervals ? params.exclude_intervals : "", params.exclude_intervals_idx ? params.exclude_intervals_idx : ""]).collect().flatten()
 
 // Initialize value channels based on params, defined in the params.genomes[params.genome] scope
 ascat_genome                = params.ascat_genome       ?:  Channel.empty()
