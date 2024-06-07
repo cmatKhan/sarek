@@ -28,7 +28,7 @@ process GATK4_VARIANTFILTRATION {
     // Check if --filter-not-in-mask is in args
     args = mask ? (args.contains('--filter-not-in-mask')
         ? args.replace("--filter-not-in-mask", " --filter-not-in-mask ${mask}") 
-        : "--mask ${mask}") : ''
+        : args + "--mask ${mask}") : ''
 
     def avail_mem = 3072
     if (!task.memory) {
