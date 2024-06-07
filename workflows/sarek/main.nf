@@ -845,7 +845,8 @@ workflow SAREK {
             ch_igvreports = Channel.empty()
 
             ch_igvreports = ch_igvreports.mix(
-                BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller
+                vcf_to_annotate
+                    .filter{ meta, vcf -> meta.variantcaller == 'haplotypecaller' }
                     .map{ meta, vcf -> [ meta.id, meta, vcf ] }
                     .combine(gff.map{ it -> it[1] })
                     .join(
