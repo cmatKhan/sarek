@@ -280,7 +280,6 @@ workflow NFCORE_SAREK {
         dict,
         fasta,
         fasta_fai,
-        gff,
         gc_file,
         germline_resource,
         germline_resource_tbi,
