@@ -1,4 +1,5 @@
 include { GATK4_VARIANTFILTRATION                                       } from '../../../modules/nf-core/gatk4/variantfiltration/main'
+include { GATK4_SELECTVARIANTS                                          } from '../../../modules/nf-core/gatk4/selectvariants/main'
 include { GATK4_CNNSCOREVARIANTS      as CNNSCOREVARIANTS               } from '../../../modules/nf-core/gatk4/cnnscorevariants/main'
 include { GATK4_FILTERVARIANTTRANCHES as FILTERVARIANTTRANCHES          } from '../../../modules/nf-core/gatk4/filtervarianttranches/main'
 
