@@ -134,6 +134,7 @@ workflow SAREK {
         vep_fasta
         vep_genome
         vep_species
+        exclude_intervals
 
     main:
 
@@ -718,7 +719,6 @@ workflow SAREK {
             params.skip_tools,
             cram_variant_calling_status_normal,
             [ [ id:'bwa' ], [] ], // bwa_index for tiddit; not used here
-            cnvkit_reference,
             dbsnp,
             dbsnp_tbi,
             dbsnp_vqsr,
@@ -741,7 +741,8 @@ workflow SAREK {
             params.sentieon_haplotyper_emit_mode,
             params.sentieon_dnascope_emit_mode,
             params.sentieon_dnascope_pcr_indel_model,
-            sentieon_dnascope_model)
+            sentieon_dnascope_model,
+            exclude_intervals)
 
         // TUMOR ONLY VARIANT CALLING
         BAM_VARIANT_CALLING_TUMOR_ONLY_ALL(
@@ -814,6 +815,7 @@ workflow SAREK {
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_strelka)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_tiddit)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_mpileup)
+        vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_TUMOR_ONLY_ALL.out.vcf_all)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_SOMATIC_ALL.out.vcf_all)
 
