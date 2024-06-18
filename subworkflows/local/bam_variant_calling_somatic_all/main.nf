@@ -121,7 +121,7 @@ workflow BAM_VARIANT_CALLING_SOMATIC_ALL {
             fasta,
             fasta_fai,
             intervals_bed_combined.map{ it -> [[id:it[0].baseName], it] },
-            [[id:"null"], []],
+            cnvkit_reference.map{ it -> [[id:it[0].baseName], it] },
             [[id:"null"], []]
         )
 
