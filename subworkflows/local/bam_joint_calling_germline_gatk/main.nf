@@ -29,7 +29,7 @@ workflow BAM_JOINT_CALLING_GERMLINE_GATK {
     known_indels_vqsr
     resource_snps_vcf
     resource_snps_tbi
-    known_snps_vqsr,
+    known_snps_vqsr
     vcf_exclude_intervals
 
     main:
