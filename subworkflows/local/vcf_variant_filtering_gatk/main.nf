@@ -1,4 +1,4 @@
-include { GATK_VARIANT_FILTERING_HARD_GATK                              } from "../vcf_variant_filtering_hard_gatk/main"
+include { GATK4_VARIANTFILTRATION                                       } from '../../../modules/nf-core/gatk4/variantfiltration/main'
 include { GATK4_CNNSCOREVARIANTS      as CNNSCOREVARIANTS               } from '../../../modules/nf-core/gatk4/cnnscorevariants/main'
 include { GATK4_FILTERVARIANTTRANCHES as FILTERVARIANTTRANCHES          } from '../../../modules/nf-core/gatk4/filtervarianttranches/main'
 
