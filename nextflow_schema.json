@@ -247,14 +247,14 @@
             "default": "",
             "fa_icon": "fas fa-toolbox",
             "properties": {
-                "exclude_intervals": {
+                "vcf_exclude_intervals": {
                     "type": "string",
                     "description": "BED or VCF file describing regions to label as FAIL/PASS in variantfiltration. If this is passed, then `--mask` is applied. To get the opposite, pass ing `--filter-not-in-mask` in the process args in a config file. See GATK VariantFiltration docs for more details.",
                     "pattern": "^\\S+\\.(bed|vcf)$",
                     "format": "file-path",
                     "mimetype": "text/txt"
                 },
-                "exclude_intervals_idx": {
+                "vcf_exclude_intervals_idx": {
                     "type": "string",
                     "description": "An index file for the exclude_variants file. Create it with GATK IndexFeatureFile",
                     "pattern": "^\\S+\\.(bed|vcf).idx$",

@@ -5,6 +5,7 @@
 //
 
 include { BCFTOOLS_SORT                                          } from '../../../modules/nf-core/bcftools/sort/main'
+include { GATK4_VARIANTFILTRATION                                } from '../../../modules/nf-core/gatk4/variantfiltration/main'
 include { GATK4_APPLYVQSR           as GATK4_APPLYVQSR_INDEL     } from '../../../modules/nf-core/gatk4/applyvqsr/main'
 include { GATK4_APPLYVQSR           as GATK4_APPLYVQSR_SNP       } from '../../../modules/nf-core/gatk4/applyvqsr/main'
 include { GATK4_GENOMICSDBIMPORT                                 } from '../../../modules/nf-core/gatk4/genomicsdbimport/main'
@@ -28,7 +29,8 @@ workflow BAM_JOINT_CALLING_GERMLINE_GATK {
     known_indels_vqsr
     resource_snps_vcf
     resource_snps_tbi
-    known_snps_vqsr
+    known_snps_vqsr,
+    vcf_exclude_intervals
 
     main:
     versions = Channel.empty()
@@ -60,6 +62,28 @@ workflow BAM_JOINT_CALLING_GERMLINE_GATK {
     // Merge scatter/gather vcfs & index
     // Rework meta for variantscalled.csv and annotation tools
     MERGE_GENOTYPEGVCFS(gvcf_to_merge, dict)
+
+    if (params.gatk_hard_filter){
+
+        GATK4_VARIANTFILTRATION(
+            MERGE_GENOTYPEGVCFS.out.vcf,
+            fasta.map{ it -> [ [:], it]},
+            fasta_fai.map{ it -> [ [:], it]},
+            dict.map{ it -> [ [:], it]},
+            vcf_exclude_intervals)
+
+        genotype_vcf = GATK4_VARIANTFILTRATION.out.vcf
+            .map{meta, vcf -> [[id:"joint_variant_calling", patient:"all_samples", variantcaller:"haplotypecaller"] , vcf]}
+        genotype_index = MERGE_GENOTYPEGVCFS.out.tbi
+            .map{meta, tbi -> [[id:"joint_variant_calling", patient:"all_samples", variantcaller:"haplotypecaller"] , tbi]}
+
+        genotype_vcf = GATK4_VARIANTFILTRATION.out.vcf
+
+        versions = versions.mix(GATK4_VARIANTFILTRATION.out.versions)
+
+        filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
+
+    }
 
     vqsr_input = MERGE_GENOTYPEGVCFS.out.vcf.join(MERGE_GENOTYPEGVCFS.out.tbi, failOnDuplicate: true)
     indels_resource_label = known_indels_vqsr.mix(dbsnp_vqsr).collect()
@@ -114,7 +138,6 @@ workflow BAM_JOINT_CALLING_GERMLINE_GATK {
         fasta.map{ meta, fasta -> [ fasta ] },
         fai.map{ meta, fai -> [ fai ] },
         dict.map{ meta, dict -> [ dict ] })
-
 
     // The following is an ugly monster to achieve the following:
     // When MERGE_GENOTYPEGVCFS and GATK4_APPLYVQSR are run, then use output from APPLYVQSR
