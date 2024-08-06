@@ -843,13 +843,16 @@ workflow SAREK {
             // Create igvreports of the haplotypecaller and realigned bams
             ch_igvreports = Channel.empty()
 
+            // note that both the id and variantcaller are necessary in order to
+            // match vcf to bams from various variantcallers
             ch_igvreports = ch_igvreports.mix(
                 vcf_to_annotate
-                    .map{ meta, vcf -> [ meta.id, meta, vcf ] }
+                    .filter({ meta, vcf -> meta.variantcaller == 'haplotypecaller' })
+                    .map{ meta, vcf -> [ [meta.id, meta.variantcaller], meta, vcf ] }
                     .combine(gff.map{ it -> it[1] })
                     .join(
                         BAM_VARIANT_CALLING_GERMLINE_ALL.out.bam_realigned_all
-                            .map{ meta, bam, bai -> [ meta.id, bam, bai ]},
+                            .map{ meta, bam, bai -> [ [meta.id, meta.variantcaller], bam, bai ]},
                         failOnMismatch: true)
                             .map{ id, meta, vcf, gff, bam, bai -> [ meta, vcf, [bam, gff], [bai] ] }
             )

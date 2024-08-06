@@ -35,7 +35,8 @@ workflow VCF_VARIANT_FILTERING_GATK {
 
         versions = versions.mix(GATK4_SELECTVARIANTS.out.versions)
 
-        filtered_vcf = GATK4_VARIANTFILTRATION.out.vcf
+        filtered_vcf = GATK4_SELECTVARIANTS.out.vcf
+
 
     } else {
 
