@@ -17,6 +17,7 @@ workflow BAM_VARIANT_CALLING_CNVKIT {
     targets             // channel: [mandatory] meta, bed
     reference           // channel: [optional]  meta, cnn
     vcf                 // channel: [optional]  meta, vcf
+    vcf                 // channel: [optional]  meta, vcf
 
     main:
     versions = Channel.empty()
@@ -45,6 +46,7 @@ workflow BAM_VARIANT_CALLING_CNVKIT {
 
     emit:
     cnv_calls_raw    = CNVKIT_CALL.out.cns      // channel: [ meta, cns ]
+    cnv_calls_export                            // channel: [ meta, export_format ]
     cnv_calls_export                            // channel: [ meta, export_format ]
     versions                                    // channel: [ versions.yml ]
 }

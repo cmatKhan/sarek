@@ -62,6 +62,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     vcf_freebayes            = Channel.empty()
     vcf_haplotypecaller      = Channel.empty()
     bam_haplotypecaller      = Channel.empty()
+    bam_haplotypecaller      = Channel.empty()
     vcf_manta                = Channel.empty()
     vcf_mpileup              = Channel.empty()
     vcf_sentieon_dnascope    = Channel.empty()
@@ -89,6 +90,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
             fasta,
             fasta_fai,
             intervals_bed_combined.map{ it -> [[id:it[0].baseName], it] },
+            [[id:"null"], []],
+            [[id:"null"], []]
             [[id:"null"], []],
             [[id:"null"], []]
         )
@@ -138,6 +141,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
 
         vcf_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.vcf
         tbi_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.tbi
+        bam_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.realigned_bam
         bam_haplotypecaller = BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.realigned_bam
 
         versions = versions.mix(BAM_VARIANT_CALLING_HAPLOTYPECALLER.out.versions)
@@ -310,6 +314,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
                     known_sites_indels.concat(known_sites_snps).flatten().unique().collect(),
                     known_sites_indels_tbi.concat(known_sites_snps_tbi).flatten().unique().collect(),
                     exclude_interval)
+                    known_sites_indels_tbi.concat(known_sites_snps_tbi).flatten().unique().collect(),
+                    exclude_interval)
 
                 vcf_sentieon_haplotyper = SENTIEON_HAPLOTYPER_VCF_VARIANT_FILTERING_GATK.out.filtered_vcf
 
@@ -363,6 +369,10 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
         bam_haplotypecaller
     )
 
+    bam_realigned_all = Channel.empty().mix(
+        bam_haplotypecaller
+    )
+
     emit:
     gvcf_sentieon_dnascope
     gvcf_sentieon_haplotyper
@@ -376,6 +386,8 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     vcf_sentieon_dnascope
     vcf_sentieon_haplotyper
     vcf_tiddit
+    bam_realigned_all
+    vcf_cnvkit = BAM_VARIANT_CALLING_CNVKIT.out.cnv_calls_export
     bam_realigned_all
     vcf_cnvkit = BAM_VARIANT_CALLING_CNVKIT.out.cnv_calls_export
 

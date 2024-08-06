@@ -42,6 +42,7 @@ params.dragmap                 = getGenomeAttribute('dragmap')
 params.fasta                   = getGenomeAttribute('fasta')
 params.fasta_fai               = getGenomeAttribute('fasta_fai')
 params.gff                     = getGenomeAttribute('gff')
+params.gff                     = getGenomeAttribute('gff')
 params.germline_resource       = getGenomeAttribute('germline_resource')
 params.germline_resource_tbi   = getGenomeAttribute('germline_resource_tbi')
 params.intervals               = getGenomeAttribute('intervals')
@@ -81,6 +82,7 @@ include { PREPARE_REFERENCE_CNVKIT         } from './subworkflows/local/prepare_
 
 // Initialize fasta file with meta map:
 fasta = params.fasta ? Channel.fromPath(params.fasta).map{ it -> [ [id:it.baseName], it ] }.collect() : Channel.empty()
+gff = params.gff ? Channel.fromPath(params.gff).map{ it -> [ [id:it.baseName], it ] }.collect() : Channel.empty()
 gff = params.gff ? Channel.fromPath(params.gff).map{ it -> [ [id:it.baseName], it ] }.collect() : Channel.empty()
 
 // Initialize file channels based on params, defined in the params.genomes[params.genome] scope
@@ -282,6 +284,7 @@ workflow NFCORE_SAREK {
         dict,
         fasta,
         fasta_fai,
+        gff,
         gff,
         gc_file,
         germline_resource,

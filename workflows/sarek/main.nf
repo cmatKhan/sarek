@@ -78,6 +78,9 @@ include { VCF_QC_BCFTOOLS_VCFTOOLS                    } from '../../subworkflows
 // Create IGV reports
 include { IGVREPORTS                                  } from '../../modules/nf-core/igvreports/main'
 
+// Create IGV reports
+include { IGVREPORTS                                  } from '../../modules/nf-core/igvreports/main'
+
 // Annotation
 include { VCF_ANNOTATE_ALL                            } from '../../subworkflows/local/vcf_annotate_all/main'
 
@@ -106,6 +109,7 @@ workflow SAREK {
         dict
         fasta
         fasta_fai
+        gff
         gff
         gc_file
         germline_resource
@@ -872,6 +876,9 @@ workflow SAREK {
             vep_fasta = (params.vep_include_fasta) ? fasta : [[id: 'null'], []]
 
             VCF_ANNOTATE_ALL(
+                vcf_to_annotate
+                    .mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
+                    .map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
                 vcf_to_annotate
                     .mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
                     .map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
