@@ -78,9 +78,6 @@ include { VCF_QC_BCFTOOLS_VCFTOOLS                    } from '../../subworkflows
 // Create IGV reports
 include { IGVREPORTS                                  } from '../../modules/nf-core/igvreports/main'
 
-// Create IGV reports
-include { IGVREPORTS                                  } from '../../modules/nf-core/igvreports/main'
-
 // Annotation
 include { VCF_ANNOTATE_ALL                            } from '../../subworkflows/local/vcf_annotate_all/main'
 
@@ -109,7 +106,6 @@ workflow SAREK {
         dict
         fasta
         fasta_fai
-        gff
         gff
         gc_file
         germline_resource
@@ -817,6 +813,9 @@ workflow SAREK {
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_deepvariant)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_freebayes)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller)
+        // including this so that the haplotypecaller_subset (subset by SELECTVARIANTS) is also
+        // annotated separately from the 'filtered' (which is not subset) VCF.
+        vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller_subset)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_manta)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_sentieon_dnascope)
         vcf_to_annotate = vcf_to_annotate.mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_sentieon_haplotyper)
@@ -850,7 +849,7 @@ workflow SAREK {
             // note that both the id and variantcaller are necessary in order to
             // match vcf to bams from various variantcallers
             ch_igvreports = ch_igvreports.mix(
-                vcf_to_annotate
+                BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_haplotypecaller_subset
                     .filter({ meta, vcf -> meta.variantcaller == 'haplotypecaller' })
                     .map{ meta, vcf -> [ [meta.id, meta.variantcaller], meta, vcf ] }
                     .combine(gff.map{ it -> it[1] })
@@ -875,10 +874,9 @@ workflow SAREK {
 
             vep_fasta = (params.vep_include_fasta) ? fasta : [[id: 'null'], []]
 
+            vcf_to_annotate.view()
+
             VCF_ANNOTATE_ALL(
-                vcf_to_annotate
-                    .mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
-                    .map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },
                 vcf_to_annotate
                     .mix(BAM_VARIANT_CALLING_GERMLINE_ALL.out.vcf_cnvkit)
                     .map{meta, vcf -> [ meta + [ file_name: vcf.baseName ], vcf ] },

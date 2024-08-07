@@ -410,16 +410,6 @@
                         ],
                         "patch": "modules/nf-core/gatk4/variantfiltration/gatk4-variantfiltration.diff"
                     },
-                    "gatk4/selectvariants": {
-                        "branch": "master",
-                        "git_sha": "d742e3143f2ccb8853c29b35cfcf50b5e5026980",
-                        "installed_by": ["modules"]
-                    },
-                    "gatk4/variantfiltration": {
-                        "branch": "master",
-                        "git_sha": "00409369b2aff69bded4f0a9e7a80e17d933b426",
-                        "installed_by": ["modules"]
-                    },
                     "gatk4/variantrecalibrator": {
                         "branch": "master",
                         "git_sha": "d742e3143f2ccb8853c29b35cfcf50b5e5026980",
@@ -461,11 +451,6 @@
                         "installed_by": [
                             "modules"
                         ]
-                    },
-                    "igvreports": {
-                        "branch": "master",
-                        "git_sha": "c62ff4610d88d2a0a4f25b8e2c2188476d08aed4",
-                        "installed_by": ["modules"]
                     },
                     "manta/germline": {
                         "branch": "master",
