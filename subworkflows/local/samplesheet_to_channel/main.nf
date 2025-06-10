@@ -148,8 +148,12 @@ workflow  SAMPLESHEET_TO_CHANNEL{
         tools_requiring_normal_samples.each{ tool_requiring_normal_samples ->
             if (tools.split(',').contains(tool_requiring_normal_samples)) requested_tools_requiring_normal_samples.add(tool_requiring_normal_samples)
         }
-        if (!requested_tools_requiring_normal_samples.isEmpty()) {
-            error('The sample-sheet only contains tumor-samples, but the following tools, which were requested by the option "tools", expect at least one normal-sample : ' + requested_tools_requiring_normal_samples.join(", "))
+        if (!tools_tumor_asked.isEmpty()) {
+            // Print debugging info
+            println "DEBUG: Printing first 3 rows of input_sample:"
+            input_sample.take(3).subscribe(onNext: { println it }, onComplete: {
+                error('The sample-sheet only contains normal-samples, but the following tools, which were requested with "--tools", expect at least one tumor-sample : ' + tools_tumor_asked.join(", "))
+            })
         }
     }
     }
