@@ -69,6 +69,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     vcf_sentieon_haplotyper    = Channel.empty()
     vcf_strelka                = Channel.empty()
     vcf_tiddit                 = Channel.empty()
+    cnv_kit_call_export        = Channel.empty()
 
     // BCFTOOLS MPILEUP
     if (tools.split(',').contains('mpileup')) {
@@ -93,6 +94,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
             [[id:"null"], []],
             [[id:"null"], []]
         )
+        cnv_kit_call_export = BAM_VARIANT_CALLING_CNVKIT.out.cnv_calls_export
         versions = versions.mix(BAM_VARIANT_CALLING_CNVKIT.out.versions)
     }
 
@@ -380,7 +382,7 @@ workflow BAM_VARIANT_CALLING_GERMLINE_ALL {
     vcf_sentieon_haplotyper
     vcf_tiddit
     bam_realigned_all
-    vcf_cnvkit = BAM_VARIANT_CALLING_CNVKIT.out.cnv_calls_export
+    vcf_cnvkit = cnv_kit_call_export //BAM_VARIANT_CALLING_CNVKIT.out.cnv_calls_export
 
     versions
 }
